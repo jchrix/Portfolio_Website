@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.local
+
+# Taste-skill working files (screenshots, reports) and the pre-redesign backup
+.taste-skill/

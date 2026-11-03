@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    { "source": "/keepit.html", "destination": "/case-studies/keepit/" },
+    { "source": "/google-transtale.html", "destination": "/case-studies/google-transtale/" },
+    { "source": "/rislly.html", "destination": "/case-studies/rislly/" },
+    { "source": "/opnr.html", "destination": "/case-studies/opnr/" },
+    { "source": "/girintec.html", "destination": "/case-studies/girintec/" },
+    { "source": "/what-is-an-experience.html", "destination": "/blog/what-is-an-experience/" }
+  ]
+}

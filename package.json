@@ -1,0 +1,25 @@
+{
+  "name": "christian-jeremiah-portfolio",
+  "version": "1.0.0",
+  "description": "Christian Jeremiah Product Design Portfolio web application",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js --dev --port=3000",
+    "start": "node server.js --port=3000",
+    "preview": "node server.js --port=3000",
+    "site": "node scripts/build-site.mjs",
+    "build": "node scripts/build.js",
+    "verify": "node scripts/verify-assets.js",
+    "fix-links": "node scripts/fix-links.js"
+  },
+  "keywords": [
+    "portfolio",
+    "product-design",
+    "framer",
+    "web-app",
+    "ui-ux"
+  ],
+  "author": "Christian Jeremiah",
+  "license": "UNLICENSED"
+}

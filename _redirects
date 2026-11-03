@@ -1,0 +1,9 @@
+# FramerExporter — nested folders (e.g. journey/index.html) serve /journey and /journey/
+# No rewrite rules required for multi-page static hosting.
+
+/keepit.html /case-studies/keepit/ 301
+/google-transtale.html /case-studies/google-transtale/ 301
+/rislly.html /case-studies/rislly/ 301
+/opnr.html /case-studies/opnr/ 301
+/girintec.html /case-studies/girintec/ 301
+/what-is-an-experience.html /blog/what-is-an-experience/ 301

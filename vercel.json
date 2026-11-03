@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    { "source": "/keepit.html", "destination": "/case-studies/keepit/", "permanent": true },
+    { "source": "/google-transtale.html", "destination": "/case-studies/google-transtale/", "permanent": true },
+    { "source": "/rislly.html", "destination": "/case-studies/rislly/", "permanent": true },
+    { "source": "/opnr.html", "destination": "/case-studies/opnr/", "permanent": true },
+    { "source": "/girintec.html", "destination": "/case-studies/girintec/", "permanent": true },
+    { "source": "/what-is-an-experience.html", "destination": "/blog/what-is-an-experience/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.mjs",
+      "headers": [{ "key": "Content-Type", "value": "application/javascript" }]
+    },
+    {
+      "source": "/(.*)\\.framercms",
+      "headers": [{ "key": "Content-Type", "value": "application/octet-stream" }]
+    }
+  ]
+}

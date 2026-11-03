@@ -1,0 +1,2 @@
+function t(e,a){return{description:"Hi, I design thoughtful, user-centered digital experiences by turning ideas into impactful solutions. With a focus on UX/UI, product research, and AI integration, together we create products that are not just functional but also innovative and intuitive.",favicon:"/images/UXlStF4fvyNilR55viZTW6XnQ_240.png",robots:"max-image-preview:large",socialImage:"/images/HZyg37RQPWdjXxIbXG9sgUdhrI_241.png",title:"Christian Jeremiah Product Design Portfolio"}}export{t as a};
+//# sourceMappingURL=chunk-JEHRLZJ6.mjs.map
