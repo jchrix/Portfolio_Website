@@ -3,7 +3,7 @@
 
 export const SITE = {
   name: 'Christian Jeremiah',
-  brand: 'Jrix-IT',
+  brand: 'Jerry_Ene',
   role: 'Product Designer',
   title: 'Christian Jeremiah — Product Designer',
   year: '2024',
@@ -16,8 +16,9 @@ export const SITE = {
 };
 
 export const HOME = {
-  headline: 'Product design for tech teams.',
-  lead: 'Collaborating with tech teams to design innovative product experiences that solve problems and deliver measurable value.',
+  headline: 'I design products that make complex problems feel simple, for users.',
+  lead: 'I help startups lead, test, design, and launch products from 0 to 100%.',
+  badges: ['Secured $25k funding', 'Responsible AI implementation'],
   workTitle: 'My work',
   skillsTitle: 'Skillset',
   toolsTitle: 'Tools',
@@ -62,7 +63,9 @@ export const PROJECTS = [
     headline: 'Implementing Rapid Recovery',
     summary: 'Microsoft 365 backup and restore for Keepit’s enterprise platform, led end to end from UX.',
     workTitle: 'Microsoft Backup Integration',
-    discipline: 'Product design',
+    sector: 'Redesigning rapid data recovery',
+    cardText: 'Securing and restoring 7tb data in seconds',
+    discipline: 'Data Security',
     role: 'UX Designer',
     industry: 'SaaS, data protection',
     year: '2024',
@@ -118,6 +121,7 @@ export const PROJECTS = [
     headline: 'Multi-User Translation Case Study',
     summary: 'Duo Mode and Friend Mode for Google Translate: two devices for one conversation across languages.',
     workTitle: 'Multi-User Translation Solution',
+    sector: 'Machine translation',
     discipline: 'Product design (UI/UX)',
     role: 'UX Designer',
     industry: 'Machine translation',
@@ -177,6 +181,7 @@ export const PROJECTS = [
     headline: 'Pet Adoption Management',
     summary: 'A pet adoption platform that verifies breeders and shelters, designed for Poznań, Poland.',
     workTitle: 'Pet Adoption Management',
+    sector: 'Pet adoption',
     discipline: 'Product design (UI/UX)',
     role: 'Product Designer',
     industry: 'SaaS',
@@ -240,6 +245,7 @@ export const PROJECTS = [
     headline: 'OPNR Redesign',
     summary: 'A landing page redesign that helps emerging musicians win opening slots at live shows.',
     workTitle: 'OPNR Redesign',
+    sector: 'Live music',
     discipline: 'Product design (UI/UX)',
     role: 'Product Designer',
     industry: 'SaaS',
@@ -298,6 +304,7 @@ export const PROJECTS = [
     headline: 'Sustainability Platform for Startups',
     summary: 'An ESG tool that helps early-stage tech startups build sustainability into their product from the start.',
     workTitle: 'Sustainable Profile',
+    sector: 'ESG & sustainability',
     discipline: 'Product design (UI/UX)',
     role: 'Product Designer',
     industry: 'SaaS',

@@ -15,15 +15,17 @@ const ARROW = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="
 
 function head({ title, description }) {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<meta name="theme-color" content="#1c1c1c">
-<link rel="preload" href="/fonts/clash-grotesk/MJQFMMOTEGNXDVM7HBBDTQHTVB2M7Y6G.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#f4f2ed">
+<script>try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preload" href="/fonts/google-sans/google-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site/site.css">
+<script src="/assets/vendor/lenis.min.js"></script>
 <script defer src="/assets/site/site.js"></script>
 </head>
 `;
@@ -39,16 +41,53 @@ function topbar(current = '') {
     ${link('/blog/', 'Blog', 'blog')}
     ${link('/#about', 'About', 'about')}
     <a class="btn nav__cta" href="/contact/"${current === 'contact' ? ' aria-current="page"' : ''}>Get in touch</a>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" title="Switch to dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.2M12 19.3v2.2M4.7 4.7l1.6 1.6M17.7 17.7l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.7 19.3l1.6-1.6M17.7 6.3l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
   </nav>
 </header>`;
 }
 
+const LINKEDIN_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg>';
+const BEHANCE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 11.2c1-.5 1.5-1.3 1.5-2.5 0-2.2-1.6-3.2-3.9-3.2H1v13h5.4c2.5 0 4.4-1.2 4.4-3.7 0-1.6-.8-2.9-2.3-3.6ZM3.9 7.7h2.3c.9 0 1.5.4 1.5 1.3s-.6 1.4-1.6 1.4H3.9V7.7Zm2.6 7.7H3.9v-3.1h2.8c1.1 0 1.8.6 1.8 1.6 0 1.1-.8 1.5-2 1.5ZM14.5 7h5.4v1.3h-5.4V7Zm2.9 1.9c-3 0-4.5 2.1-4.5 4.6 0 2.6 1.4 4.6 4.6 4.6 2.3 0 3.6-1.1 4.2-3.1h-2.3c-.2.6-.8 1-1.8 1-1.3 0-2-.7-2.1-2h6.5c.2-3-1.2-5.1-4.6-5.1Zm-2 3.7c.1-1 .8-1.7 2-1.7s1.8.7 1.9 1.7h-3.9Z"/></svg>';
+
 function footer() {
-  return `<footer class="footer wrap">
-  <div class="footer__row">
-    <span>© ${SITE.year} ${SITE.name} (${SITE.brand})</span>
-    <span><a href="${SITE.links.linkedin}" rel="noopener">LinkedIn</a> · <a href="${SITE.links.behance}" rel="noopener">Behance</a></span>
+  const { linkedin, behance } = SITE.links;
+  return `<footer class="footer">
+  <div class="footer__inner wrap">
+    <div class="footer__top">
+      <div class="footer__intro">
+        <p class="footer__title">Created with <em>care.</em></p>
+        <p class="footer__text">Open to product design work with startups and enterprise teams. Tell me about the problem you need solved.</p>
+        <div class="footer__cta">
+          <span>Have a project in mind?</span>
+          <a href="/contact/">Get in touch</a>
+        </div>
+        <div class="footer__social">
+          <a href="${linkedin}" rel="noopener" aria-label="LinkedIn">${LINKEDIN_ICON}</a>
+          <a href="${behance}" rel="noopener" aria-label="Behance">${BEHANCE_ICON}</a>
+        </div>
+      </div>
+      <nav class="footer__col" aria-label="Site">
+        <h2>Navigate</h2>
+        <a href="/">Home</a>
+        <a href="/#work">Work</a>
+        <a href="/#skills">Skills</a>
+        <a href="/blog/">Blog</a>
+        <a href="/#about">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+      <nav class="footer__col" aria-label="Elsewhere">
+        <h2>Elsewhere</h2>
+        <a href="${linkedin}" rel="noopener">LinkedIn</a>
+        <a href="${behance}" rel="noopener">Behance</a>
+        <a href="#top">Back to top</a>
+      </nav>
+    </div>
+    <p class="footer__legal">Copyright © ${SITE.year} Design by <strong>${SITE.name}</strong></p>
   </div>
+  <p class="footer__mark" aria-hidden="true">${SITE.brand}</p>
 </footer>`;
 }
 
@@ -65,96 +104,91 @@ ${footer()}
 /* ---------- home ---------- */
 
 function homePage() {
-  const first = PROJECTS[0];
-  const heroPhoto = first.image;
-  const work = PROJECTS.map((p, i) => `
-          <a class="work__row" href="/case-studies/${p.slug}/" data-work-row${i === 0 ? ' aria-current="true"' : ' aria-current="false"'}>
-            <span class="name">${esc(p.workTitle)}</span>
-            <span class="meta">${esc(p.client)} · ${esc(p.year)}</span>
-          </a>`).join('');
-  const media = PROJECTS.map((p, i) => `
-        <figure class="work__media${i === 0 ? ' is-active' : ''}" data-work-media data-now="${esc(p.name)}" aria-hidden="${i === 0 ? 'false' : 'true'}">
-          <img src="${p.image.src}" alt="${esc(p.image.alt)}" decoding="async">
-          <figcaption><span><strong>${esc(p.client)}</strong><br>${esc(p.discipline)}</span><a class="text-link" href="/case-studies/${p.slug}/" tabindex="${i === 0 ? '0' : '-1'}">Read the case</a></figcaption>
-        </figure>`).join('');
-  const skills = HOME.skills.map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('');
-  const tools = HOME.tools.map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('');
   const post = BLOG.posts[0];
+  const years = PROJECTS.map((p) => Number(p.year)).filter(Boolean);
+  const span = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : '';
+  const arrowIcon = ARROW;
+
+  const work = PROJECTS.map((p) => `
+      <a class="proj" href="/case-studies/${p.slug}/" data-reveal>
+        <div class="proj__media">
+          <img src="${p.image.src}" alt="${esc(p.image.alt)}" decoding="async" loading="lazy">
+          <span class="chip">${esc(p.discipline)}</span>
+        </div>
+        <div class="proj__body">
+          <div class="proj__text">
+            <h3 class="proj__title">${esc(p.sector)}</h3>
+            <div class="proj__reveal"><div><p class="proj__meta">${esc(p.cardText || `${p.client} · ${p.year}`)}</p></div></div>
+          </div>
+          <span class="proj__go" aria-hidden="true">${arrowIcon}</span>
+        </div>
+      </a>`).join('');
+
+  const skills = HOME.skills.map(([t, d], i) => `<div class="skill" data-reveal style="--d:${i % 3}">
+        <span class="skill__num">${String(i + 1).padStart(2, '0')}</span>
+        <dt>${esc(t)}</dt>
+        <dd>${esc(d)}</dd>
+      </div>`).join('');
+  const tools = HOME.tools.map(([t, d]) => `<div class="tool"><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('');
   const about = HOME.about.map((p) => `<p>${esc(p)}</p>`).join('');
 
   const body = `<main id="main">
-<section class="hero" aria-label="Introduction">
-  <div class="sheet">
-    <div class="sheet__top">
-      <a class="wordmark" href="/">${SITE.brand}</a>
-      <nav aria-label="Primary"><a href="#work">Work</a><a href="#skills">Skills</a><a href="/blog/">Blog</a><a href="#about">About</a></nav>
-    </div>
-    <div class="sheet__body">
-      <h1 data-reveal style="--d:0">${esc(HOME.headline)}</h1>
-      <p data-reveal style="--d:1">${esc(HOME.lead)}</p>
-      <div class="sheet__actions" data-reveal style="--d:2">
-        <a class="btn" href="/contact/">Get in touch ${ARROW}</a>
-        <a class="btn btn--ghost" href="#work">My work</a>
-      </div>
-    </div>
-    <p class="sheet__foot">${SITE.name} · ${SITE.role}</p>
+<section class="home-hero" aria-label="Introduction">
+  <h1 data-reveal style="--d:0">I design products that make complex problems feel simple, for <span class="swap"><span class="swap__a"><em>users</em>.</span><span class="swap__b" aria-hidden="true"><em>business</em>.</span></span></h1>
+  <div class="home-hero__row">
+    <p class="home-hero__lead" data-reveal style="--d:1">${esc(HOME.lead)}</p>
   </div>
-  <figure class="photo">
-    <img src="${heroPhoto.src}" alt="${esc(heroPhoto.alt)}">
-    <figcaption><span>${esc(first.client)}: ${esc(first.workTitle)}</span><a class="text-link" href="/case-studies/${first.slug}/">Read the case</a></figcaption>
-  </figure>
+  <ul class="badges" data-reveal aria-label="Highlights">${HOME.badges.map((b) => `<li class="chip">${esc(b)}</li>`).join('')}</ul>
 </section>
 
-<section class="work-head" id="work" aria-labelledby="work-title">
-  <h2 id="work-title">${esc(HOME.workTitle)}</h2>
-</section>
-
-<section class="work" data-work aria-label="Selected projects">
-  <div class="work__stage">
-    <div class="work__left">
-      <p class="work__now" data-work-now aria-live="polite">${esc(first.name)}</p>
-      <nav class="work__index" aria-label="Case studies">${work}
-      </nav>
-    </div>
-    <div class="work__right">${media}
-    </div>
-  </div>
-</section>
-
-<section class="section band" id="skills" aria-labelledby="skills-title">
+<section class="section" id="work" aria-labelledby="work-title">
   <div class="wrap">
     <div class="section__head">
-      <h2 id="skills-title" class="head" data-reveal>${esc(HOME.skillsTitle)}</h2>
+      <h2 id="work-title" data-reveal>${esc(HOME.workTitle)}</h2>
+      <a class="text-link" href="/projects/" data-reveal>All Projects ${ARROW}</a>
     </div>
-    <dl class="rows" data-reveal>${skills}</dl>
-    <div class="section__head" style="margin-top:clamp(96px,10vw,160px)">
-      <h2 id="tools-title" class="head" data-reveal>${esc(HOME.toolsTitle)}</h2>
+    <div class="work-grid">${work}
     </div>
-    <dl class="rows rows--small" data-reveal>${tools}</dl>
+  </div>
+</section>
+
+<section class="section" id="skills" aria-labelledby="skills-title">
+  <div class="wrap">
+    <div class="section__head">
+      <h2 id="skills-title" data-reveal>${esc(HOME.skillsTitle)}</h2>
+      <p data-reveal>The work I do from first workshop to the final handover.</p>
+    </div>
+    <dl class="skill-grid">${skills}</dl>
+    <div class="section__head" style="margin-top:clamp(88px,9vw,140px)">
+      <h2 id="tools-title" data-reveal>${esc(HOME.toolsTitle)}</h2>
+      <p data-reveal>The software and services I use day to day.</p>
+    </div>
+    <dl class="tool-cloud" data-reveal>${tools}</dl>
   </div>
 </section>
 
 <section class="section" id="blog" aria-labelledby="blog-title">
   <div class="wrap">
     <div class="section__head">
-      <h2 id="blog-title" class="head" data-reveal>${esc(HOME.blogTitle)}</h2>
+      <h2 id="blog-title" data-reveal>${esc(HOME.blogTitle)}</h2>
+      <p data-reveal>Fresh insights from my recent writing.</p>
     </div>
     <a class="blog-row" href="/blog/${post.slug}/" data-reveal>
-      <div class="blog-row__img"><img src="${post.image.src}" alt="${esc(post.image.alt)}"></div>
+      <div class="blog-row__img"><img src="${post.image.src}" alt="${esc(post.image.alt)}" loading="lazy"></div>
       <div>
-        <h3>${esc(post.title)}</h3>
         <time datetime="2024-08-16">${esc(post.date)}</time>
+        <h3>${esc(post.title)}</h3>
+        <span class="text-link">Read the essay ${ARROW}</span>
       </div>
-      <span class="text-link">Read ${ARROW}</span>
     </a>
-    <p style="margin-top:32px" data-reveal><a class="text-link" href="/blog/">See all posts ${ARROW}</a></p>
+    <p style="margin-top:32px" data-reveal><a class="text-link" href="/blog/">All posts ${ARROW}</a></p>
   </div>
 </section>
 
-<section class="section band" id="about" aria-labelledby="about-title">
-  <div class="wrap">
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="dark">
     <div class="about-grid">
-      <h2 id="about-title" class="head" data-reveal>${esc(HOME.aboutTitle)}</h2>
+      <h2 id="about-title" data-reveal>${esc(HOME.aboutTitle)}</h2>
       <div class="about" data-reveal>
         ${about}
         <p class="sign"><strong>${esc(SITE.name)}</strong><span>${esc(SITE.role)}</span></p>
@@ -167,7 +201,7 @@ function homePage() {
   return page({
     title: SITE.title,
     description: 'Christian Jeremiah, product designer. Case studies in enterprise SaaS, machine translation, pet adoption, live music and ESG tools.',
-  }, body);
+  }, topbar() + body);
 }
 
 /* ---------- case studies ---------- */
@@ -359,12 +393,47 @@ function contactPage() {
   }, topbar('contact') + body);
 }
 
+/* ---------- all projects ---------- */
+
+function projectsPage() {
+  const cards = PROJECTS.map((p) => `
+      <a class="proj" href="/case-studies/${p.slug}/" data-reveal>
+        <div class="proj__media">
+          <img src="${p.image.src}" alt="${esc(p.image.alt)}" decoding="async" loading="lazy">
+          <span class="chip">${esc(p.discipline)}</span>
+        </div>
+        <div class="proj__body">
+          <div class="proj__text">
+            <h2 class="proj__title">${esc(p.sector)}</h2>
+            <div class="proj__reveal"><div><p class="proj__meta">${esc(p.cardText || `${p.client} · ${p.year}`)}</p></div></div>
+          </div>
+          <span class="proj__go" aria-hidden="true">${ARROW}</span>
+        </div>
+      </a>`).join('');
+
+  const body = `<main id="main">
+<section class="page-head">
+  <h1 data-reveal>All projects</h1>
+  <p class="page-lede" data-reveal>Every case study, from the problem to the results.</p>
+</section>
+<section class="wrap" style="padding-bottom:160px">
+  <div class="work-grid">${cards}
+  </div>
+</section>
+</main>`;
+  return page({
+    title: `All projects — ${SITE.name}`,
+    description: 'All product design projects by Christian Jeremiah: enterprise SaaS, machine translation, pet adoption, live music and ESG tools.',
+  }, topbar('work') + body);
+}
+
 /* ---------- write ---------- */
 
 const outputs = [
   ['index.html', homePage()],
   ['contact/index.html', contactPage()],
   ['blog/index.html', blogIndexPage()],
+  ['projects/index.html', projectsPage()],
   ['blog/what-is-an-experience/index.html', articlePage()],
   ...PROJECTS.map((p, i) => [`case-studies/${p.slug}/index.html`, casePage(p, i)]),
 ];

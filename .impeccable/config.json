@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "assets/site/site.css"
+        ],
+        "createdAt": "2026-11-04T15:51:37.782Z",
+        "reason": "user confirmed: keep the gradient fade on the footer brand mark"
+      }
+    ]
+  }
+}

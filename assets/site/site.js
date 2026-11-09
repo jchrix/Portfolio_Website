@@ -5,39 +5,33 @@
   root.classList.remove('no-js');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* 1. Entrances: each part of a section rises once, as it enters. */
-  var reveals = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
-  var pending = reveals.slice();
-  var show = function (el) { el.classList.add('is-in'); };
-
-  /* Anything already above the reader has been passed, so it is shown: a jump to the
-     bottom of the page (or a find-in-page) never leaves hidden text behind. */
-  var sweepPassed = function () {
-    pending = pending.filter(function (el) {
-      if (el.getBoundingClientRect().bottom < 0) { show(el); return false; }
-      return true;
-    });
+  /* 0. Smooth scroll (Lenis). Mouse wheel and trackpad get eased, momentum-style scrolling.
+        Touch screens keep their native scrolling. Reduced motion keeps the browser's own scroll.
+        Tuning lives in LENIS_CONFIG below. */
+  var LENIS_CONFIG = {
+    duration: 1.15,                                                  // seconds for one wheel "flick" to settle
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, // expo-out: fast start, long soft landing
+    wheelMultiplier: 1,                                              // 1 = true wheel distance; 0.6 = slower, 1.4 = faster
+    touchMultiplier: 1,                                              // only used if syncTouch is turned on
+    smoothWheel: true,
+    gestureOrientation: 'vertical',
+    anchors: true,                                                   // #links glide too
+    autoRaf: true                                                    // Lenis runs its own frame loop
   };
+  if (window.Lenis && !reduce.matches && window.matchMedia('(pointer: fine)').matches) {
+    window.lenis = new window.Lenis(LENIS_CONFIG);
+  }
 
+  /* 1. Entrances: each part blur-fades in every time it enters the view, and resets when it
+        leaves, so scrolling back up and down plays the effect again. */
+  var reveals = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
   if ('IntersectionObserver' in window && !reduce.matches) {
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          show(e.target);
-          io.unobserve(e.target);
-        }
-      });
+      entries.forEach(function (e) { e.target.classList.toggle('is-in', e.isIntersecting); });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     reveals.forEach(function (el) { io.observe(el); });
-    var sweepTicking = false;
-    window.addEventListener('scroll', function () {
-      if (sweepTicking) return;
-      sweepTicking = true;
-      window.requestAnimationFrame(function () { sweepTicking = false; sweepPassed(); });
-    }, { passive: true });
-    sweepPassed();
   } else {
-    reveals.forEach(show);
+    reveals.forEach(function (el) { el.classList.add('is-in'); });
   }
 
   /* 2. The work index: the picture follows the reader through the pinned stage.
@@ -90,6 +84,24 @@
 
     onScroll();
     if (!pinned()) setActive(0);
+  }
+
+  /* 2b. Theme: light or dark, remembered on this device. The early script in <head> applies it before paint. */
+  var toggle = document.querySelector('[data-theme-toggle]');
+  if (toggle) {
+    var syncLabel = function () {
+      var dark = root.dataset.theme === 'dark';
+      var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
+    };
+    syncLabel();
+    toggle.addEventListener('click', function () {
+      var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) { /* private mode: the choice lasts this visit only */ }
+      syncLabel();
+    });
   }
 
   /* 3. Contact: opens the visitor's own email app, addressed to the site owner. No server. */
