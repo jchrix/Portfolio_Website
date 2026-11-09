@@ -188,7 +188,12 @@ function homePage() {
 <section class="section" id="about" aria-labelledby="about-title">
   <div class="dark">
     <div class="about-grid">
-      <h2 id="about-title" data-reveal>${esc(HOME.aboutTitle)}</h2>
+      <div class="about-intro">
+        <h2 id="about-title" data-reveal>${esc(HOME.aboutTitle)}</h2>
+        <figure class="portrait" data-reveal>
+          <img src="/images/christian-jeremiah-portrait.webp" width="960" height="1200" loading="lazy" decoding="async" alt="Portrait of Christian Jeremiah smiling, wearing round glasses and a checked shirt">
+        </figure>
+      </div>
       <div class="about" data-reveal>
         ${about}
         <p class="sign"><strong>${esc(SITE.name)}</strong><span>${esc(SITE.role)}</span></p>

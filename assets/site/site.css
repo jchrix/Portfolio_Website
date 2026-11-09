@@ -363,6 +363,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .dark .small, .dark .sign span { color: var(--field-muted); }
 .about-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(40px, 6vw, 120px); align-items: start; }
 .about-grid h2 { font-size: var(--step-head); font-weight: 400; letter-spacing: -0.045em; line-height: 0.98; }
+.about-intro { display: grid; gap: clamp(28px, 3vw, 48px); }
+.portrait {
+  margin: 0; max-width: 420px; padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: calc(var(--radius) + 10px);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+}
+.portrait img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover;
+  border-radius: var(--radius);
+  outline: 1px solid rgba(255, 255, 255, 0.08); outline-offset: -1px;
+}
 .about { max-width: 58ch; }
 .about p { font-size: var(--step-body); line-height: 1.6; color: var(--field-ink); }
 .about p + p { margin-top: 1.1em; }
