@@ -13,7 +13,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 const ARROW = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13 13 3M5.5 3H13v7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-function head({ title, description }) {
+function head({ title, description, extraHead = '' }) {
   return `<!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -24,7 +24,7 @@ function head({ title, description }) {
 <meta name="theme-color" content="#f4f2ed">
 <script>try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preload" href="/fonts/google-sans/google-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site/site.css">
+<link rel="stylesheet" href="/assets/site/site.css">${extraHead}
 <script src="/assets/vendor/lenis.min.js"></script>
 <script defer src="/assets/site/site.js"></script>
 </head>
@@ -49,42 +49,10 @@ function topbar(current = '') {
 </header>`;
 }
 
-const LINKEDIN_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg>';
-const BEHANCE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 11.2c1-.5 1.5-1.3 1.5-2.5 0-2.2-1.6-3.2-3.9-3.2H1v13h5.4c2.5 0 4.4-1.2 4.4-3.7 0-1.6-.8-2.9-2.3-3.6ZM3.9 7.7h2.3c.9 0 1.5.4 1.5 1.3s-.6 1.4-1.6 1.4H3.9V7.7Zm2.6 7.7H3.9v-3.1h2.8c1.1 0 1.8.6 1.8 1.6 0 1.1-.8 1.5-2 1.5ZM14.5 7h5.4v1.3h-5.4V7Zm2.9 1.9c-3 0-4.5 2.1-4.5 4.6 0 2.6 1.4 4.6 4.6 4.6 2.3 0 3.6-1.1 4.2-3.1h-2.3c-.2.6-.8 1-1.8 1-1.3 0-2-.7-2.1-2h6.5c.2-3-1.2-5.1-4.6-5.1Zm-2 3.7c.1-1 .8-1.7 2-1.7s1.8.7 1.9 1.7h-3.9Z"/></svg>';
 
 function footer() {
-  const { linkedin, behance } = SITE.links;
   return `<footer class="footer">
   <div class="footer__inner wrap">
-    <div class="footer__top">
-      <div class="footer__intro">
-        <p class="footer__title">Created with <em>care.</em></p>
-        <p class="footer__text">Open to product design work with startups and enterprise teams. Tell me about the problem you need solved.</p>
-        <div class="footer__cta">
-          <span>Have a project in mind?</span>
-          <a href="/contact/">Get in touch</a>
-        </div>
-        <div class="footer__social">
-          <a href="${linkedin}" rel="noopener" aria-label="LinkedIn">${LINKEDIN_ICON}</a>
-          <a href="${behance}" rel="noopener" aria-label="Behance">${BEHANCE_ICON}</a>
-        </div>
-      </div>
-      <nav class="footer__col" aria-label="Site">
-        <h2>Navigate</h2>
-        <a href="/">Home</a>
-        <a href="/#work">Work</a>
-        <a href="/#skills">Skills</a>
-        <a href="/blog/">Blog</a>
-        <a href="/#about">About</a>
-        <a href="/contact/">Contact</a>
-      </nav>
-      <nav class="footer__col" aria-label="Elsewhere">
-        <h2>Elsewhere</h2>
-        <a href="${linkedin}" rel="noopener">LinkedIn</a>
-        <a href="${behance}" rel="noopener">Behance</a>
-        <a href="#top">Back to top</a>
-      </nav>
-    </div>
     <p class="footer__legal">Copyright © ${SITE.year} Design by <strong>${SITE.name}</strong></p>
   </div>
   <p class="footer__mark" aria-hidden="true">${SITE.brand}</p>
@@ -102,6 +70,15 @@ ${footer()}
 }
 
 /* ---------- home ---------- */
+
+// Hero background: wide crops for desktop, a 4:5 crop centred on the layer stack for phones.
+const HERO_BG = {
+  desktop: '/images/hero-layers-1280.webp 1280w, /images/hero-layers-1920.webp 1920w, /images/hero-layers-2560.webp 2560w',
+  mobile: '/images/hero-layers-mobile-720.webp 720w, /images/hero-layers-mobile-1080.webp 1080w',
+};
+const HERO_PRELOAD = `
+<link rel="preload" as="image" type="image/webp" media="(max-width: 720px)" imagesrcset="${HERO_BG.mobile}" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 721px)" imagesrcset="${HERO_BG.desktop}" imagesizes="100vw" fetchpriority="high">`;
 
 function homePage() {
   const post = BLOG.posts[0];
@@ -134,6 +111,10 @@ function homePage() {
 
   const body = `<main id="main">
 <section class="home-hero" aria-label="Introduction">
+  <picture class="home-hero__bg">
+    <source media="(max-width: 720px)" type="image/webp" srcset="${HERO_BG.mobile}" sizes="100vw">
+    <img src="/images/hero-layers-1920.webp" srcset="${HERO_BG.desktop}" sizes="100vw" width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
+  </picture>
   <h1 data-reveal style="--d:0">I design products that make complex problems feel simple, for <span class="swap"><span class="swap__a"><em>users</em>.</span><span class="swap__b" aria-hidden="true"><em>business</em>.</span></span></h1>
   <div class="home-hero__row">
     <p class="home-hero__lead" data-reveal style="--d:1">${esc(HOME.lead)}</p>
@@ -206,6 +187,7 @@ function homePage() {
   return page({
     title: SITE.title,
     description: 'Christian Jeremiah, product designer. Case studies in enterprise SaaS, machine translation, pet adoption, live music and ESG tools.',
+    extraHead: HERO_PRELOAD,
   }, topbar() + body);
 }
 

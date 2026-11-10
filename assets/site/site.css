@@ -59,8 +59,8 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* desktop: 120px side margins so the content sits in the middle of the page */
-@media (min-width: 1100px) {
+/* desktop and laptop (incl. scaled displays): 240px side margins so the content sits in the middle of the page */
+@media (min-width: 1024px) {
   :root, :root[data-theme="light"], :root[data-theme="dark"] { --pad: 240px; }
 }
 
@@ -76,6 +76,7 @@ html {
 
 body {
   margin: 0;
+  --page-bg: var(--bg); /* resolved here so the hero, which re-declares --bg, can still fade into the page */
   font-family: var(--font);
   font-size: var(--step-body);
   font-weight: 400;
@@ -175,6 +176,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .nav a:not(.btn):hover, .nav a:not(.btn)[aria-current="page"] { color: var(--ink); background: var(--glass-hover); }
 .nav a.btn { min-height: 40px; padding: 0 18px; margin-left: 4px; }
 @media (max-width: 720px) { .nav a:not(.nav__cta) { display: none; } }
+/* Laptops with 240px margins leave a narrow bar, so tighten the nav links to keep everything inside it. */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .topbar { padding-left: 20px; gap: 8px; }
+  .nav { gap: 0; }
+  .nav a:not(.btn) { padding-inline: 10px; }
+}
 
 /* ---------- buttons and text links ---------- */
 
@@ -183,7 +190,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   min-height: 52px; padding: 0 26px; border-radius: 999px;
   background: var(--ink); color: var(--bg);
   font: inherit; font-size: var(--step-small); font-weight: 500; letter-spacing: -0.005em;
-  text-decoration: none; border: 0; cursor: pointer;
+  text-decoration: none; border: 0; cursor: pointer; white-space: nowrap;
   transition: background-color 240ms var(--ease-out), transform 160ms var(--ease-out);
 }
 .btn:hover { background: var(--accent); color: var(--accent-ink); }
@@ -207,12 +214,48 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* ---------- HOME: hero ---------- */
 
-/* Full-bleed hero with a transparent, light artwork on the right. Light tokens are re-declared locally so
-   the hero stays light in both themes (the artwork's white body would wash out light text). */
+/* Full-bleed, full-height hero on the floating-layers artwork. It is pulled up under the sticky topbar
+   (16px margin + 58px bar) so the image reaches the top of the viewport. Dark tokens are re-declared
+   locally so text, chips and buttons stay legible in both site themes, and a scrim keeps the copy at
+   >= 4.5:1 contrast wherever it overlaps the artwork. The copy stays on the --pad grid (240px on desktop). */
 .home-hero {
-  padding: clamp(48px, 7vw, 96px) var(--pad) clamp(48px, 6vw, 80px);
+  --ink: #f4f2ed; --muted: #b4b2aa; --card: rgba(255, 255, 255, 0.06); --line: rgba(255, 255, 255, 0.16);
+  --bg: #0b0b0b; --accent: #7d96ff; --accent-ink: #0d0d0d;
+  --topbar-space: 74px;
+  --fade-h: clamp(140px, 24vh, 280px); /* bottom fade into the page background */
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100vh; min-height: 100svh;
+  margin-top: calc(-1 * var(--topbar-space));
+  padding: calc(var(--topbar-space) + clamp(48px, 6vw, 96px)) var(--pad) calc(var(--fade-h) * 0.75);
   color: var(--ink);
-  background: transparent;
+  background: #0b0b0b; /* shows while the image loads, and if it fails */
+}
+.home-hero > * { position: relative; z-index: 1; }
+.home-hero > .home-hero__bg { position: absolute; inset: 0; z-index: -2; }
+.home-hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; display: block; }
+.home-hero::before, .home-hero::after { content: ''; position: absolute; z-index: -1; pointer-events: none; }
+/* Scrim behind the copy. */
+.home-hero::before {
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 11, 11, 0.85) 0%, rgba(11, 11, 11, 0.55) 45%, rgba(11, 11, 11, 0) 70%);
+}
+/* Seamless edge: the image melts into the page colour (either theme). Eased stops avoid a visible band. */
+.home-hero::after {
+  inset: auto 0 0 0; height: var(--fade-h);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--page-bg) 0%, transparent) 0%,
+    color-mix(in srgb, var(--page-bg) 19%, transparent) 25%,
+    color-mix(in srgb, var(--page-bg) 50%, transparent) 50%,
+    color-mix(in srgb, var(--page-bg) 81%, transparent) 75%,
+    var(--page-bg) 100%);
+}
+@media (max-width: 720px) {
+  /* Copy at the top, layer stack showing below it. */
+  .home-hero { --fade-h: 120px; justify-content: flex-start; padding-bottom: clamp(260px, 70vw, 380px); }
+  /* Text sits above the artwork on phones, so darken top-down and fade out toward the stack. */
+  .home-hero::before { background: linear-gradient(180deg, rgba(11, 11, 11, 0.88) 0%, rgba(11, 11, 11, 0.7) 50%, rgba(11, 11, 11, 0) 80%); }
+  .home-hero__bg img { object-position: 50% 80%; }
 }
 .home-hero__eyebrow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: var(--step-small); color: var(--muted); }
 .chip {
@@ -221,7 +264,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   box-shadow: inset 0 0 0 1px var(--line);
 }
 .chip--live::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-.home-hero h1 { margin-top: 32px; font-size: calc(var(--step-display) / 1.4); letter-spacing: -0.055em; line-height: 0.92; font-weight: 400; max-width: 13ch; }
+.home-hero h1 { margin-top: 0; font-size: calc(var(--step-display) / 1.4); letter-spacing: -0.055em; line-height: 0.92; font-weight: 400; max-width: 13ch; }
 .home-hero__row {
   margin-top: clamp(40px, 5vw, 64px);
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: end;
@@ -264,7 +307,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .section { padding-block: clamp(96px, 10vw, 160px); }
 .section__head {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40ch); gap: 32px; align-items: end;
+  display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(0, 40ch); gap: 32px; align-items: end;
   margin-bottom: clamp(40px, 5vw, 72px);
 }
 .section__head h2 { font-size: var(--step-head); font-weight: 400; letter-spacing: -0.045em; line-height: 0.98; }
@@ -499,47 +542,20 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* Always a dark band, in both themes. */
 .footer {
-  --f-bg: #0d0e10; --f-ink: #ffffff; --f-muted: #8b8c91; --f-line: #1c1d21; --f-raise: #17181b;
-  margin: clamp(64px, 8vw, 120px) var(--pad) 0;
-  border-radius: clamp(28px, 3vw, 44px);
-  background: var(--f-bg); color: var(--f-muted);
+  --f-bg: #0d0e10; --f-ink: #ffffff; --f-muted: #8b8c91; --f-line: #1c1d21;
+  --f-fade: clamp(120px, 14vw, 220px); /* height of the blend from the page into the footer */
+  /* Full-bleed band; the content inside stays on the --pad grid (240px on desktop).
+     The top melts from the page colour into the footer colour so there is no hard edge. */
+  margin: clamp(64px, 8vw, 120px) 0 0;
+  background: linear-gradient(180deg,
+    var(--page-bg) 0%,
+    color-mix(in srgb, var(--f-bg) 50%, var(--page-bg)) calc(var(--f-fade) * 0.5),
+    var(--f-bg) var(--f-fade));
+  color: var(--f-muted);
   font-size: var(--step-small); overflow: hidden;
 }
-.footer__inner { padding-block: clamp(48px, 6vw, 88px) 0; padding-inline: clamp(28px, 4vw, 72px); }
-.footer__top { display: grid; grid-template-columns: minmax(0, 1fr) 150px 150px; gap: 40px clamp(32px, 6vw, 96px); }
-.footer__title {
-  font-size: clamp(2.5rem, 1.7rem + 3vw, 4rem); font-weight: 500;
-  letter-spacing: -0.04em; line-height: 1.05; color: var(--f-ink);
-}
-.footer__title em { font-family: var(--font); font-style: italic; font-weight: 400; letter-spacing: -0.03em; }
-.footer__text { margin-top: 32px; max-width: 30ch; font-size: 16px; line-height: 1.4; }
-.footer__cta {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  margin-top: 16px; max-width: 400px; padding: 6px; padding-left: 18px;
-  background: var(--f-raise); border: 1px solid var(--f-line); border-radius: 14px;
-  color: var(--f-ink); font-size: 16px;
-}
-.footer__cta a {
-  display: inline-flex; align-items: center; min-height: 48px; padding: 0 17px; border-radius: 10px;
-  background: var(--f-ink); color: #0d0e10; font-weight: 500; text-decoration: none; white-space: nowrap;
-  transition: transform 160ms var(--ease-out), background-color 200ms ease;
-}
-.footer__cta a:hover { background: #d9dcff; }
-.footer__cta a:active { transform: scale(0.97); }
-.footer__social { display: flex; gap: 12px; margin-top: 12px; }
-.footer__social a {
-  display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%;
-  background: var(--f-raise); color: var(--f-ink); border: 1px solid var(--f-line);
-  transition: background-color 200ms ease, transform 160ms var(--ease-out);
-}
-.footer__social a:hover { background: #26272c; }
-.footer__social a:active { transform: scale(0.94); }
-.footer__social svg { width: 15px; height: 15px; }
-.footer__col { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding-top: 6px; }
-.footer__col h2 { margin-bottom: 8px; font-size: 16px; font-weight: 400; letter-spacing: 0; line-height: 1.2; color: var(--f-muted); }
-.footer__col a { color: var(--f-ink); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; text-decoration: none; transition: opacity 200ms ease; }
-.footer__col a:hover { opacity: 0.65; }
-.footer__legal { margin-top: clamp(48px, 6vw, 80px); padding-block: 24px 0; border-top: 1px solid var(--f-line); font-size: 16px; }
+.footer__inner { padding-block: var(--f-fade) 0; padding-inline: var(--pad); }
+.footer__legal { font-size: 16px; }
 .footer__legal strong { color: var(--f-ink); font-weight: 500; }
 .footer__mark {
   margin: 0; padding-inline: 0; text-align: center; user-select: none;
@@ -547,13 +563,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   height: 0.62em; overflow: hidden;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0) 92%);
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
-}
-@media (max-width: 900px) {
-  .footer__top { grid-template-columns: 1fr 1fr; }
-  .footer__intro { grid-column: 1 / -1; }
-}
-@media (max-width: 860px) {
-  .footer { margin-inline: 12px; border-radius: 28px; }
 }
 
 /* ---------- smooth scroll (Lenis): the library owns scrolling, so native smooth behaviour must be off ---------- */
